@@ -52,6 +52,7 @@ export interface SiteSettings {
   contactAddress: string;
   heroTitle: string;
   heroDescription: string;
+  heroImageUrl: string;
   facebookUrl: string;
   instagramUrl: string;
   youtubeUrl: string;

@@ -7,12 +7,11 @@ interface ContentContextType {
   tours: TourPackage[];
   testimonials: Testimonial[];
   settings: SiteSettings;
-  updateTours: (tours: TourPackage[]) => void;
-  updateTestimonials: (testimonials: Testimonial[]) => void;
-  updateSettings: (settings: SiteSettings) => void;
   addTour: (tour: TourPackage) => void;
   deleteTour: (id: string) => void;
   editTour: (tour: TourPackage) => void;
+  updateSettings: (settings: SiteSettings) => void;
+  updateTestimonials: (testimonials: Testimonial[]) => void;
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {
@@ -23,9 +22,10 @@ const DEFAULT_SETTINGS: SiteSettings = {
   contactAddress: "123 Travel Lane, Bhowanipore, Kolkata, West Bengal - 700025",
   heroTitle: "Discover Your Next Grand Adventure",
   heroDescription: "From the misty peaks of Darjeeling to the turquoise waters of Andaman, Lilipas Travel creates memories that last a lifetime.",
-  facebookUrl: "#",
-  instagramUrl: "#",
-  youtubeUrl: "#",
+  heroImageUrl: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=2000",
+  facebookUrl: "https://facebook.com",
+  instagramUrl: "https://instagram.com",
+  youtubeUrl: "https://youtube.com",
   aboutMission: "Founded with a passion for discovery, Lilipas Travel connects travelers with authentic local experiences while maintaining global standards of comfort and safety.",
   aboutTeamDesc: "Our team consists of travel consultants, ground operators, and hospitality experts who collectively have traveled to over 40 countries. We don't just plan tours; we plan adventures that we ourselves would love to go on."
 };
@@ -34,43 +34,42 @@ const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
 export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [tours, setTours] = useState<TourPackage[]>(() => {
-    const saved = localStorage.getItem('lilipas_tours');
+    const saved = localStorage.getItem('lilipas_tours_v1');
     return saved ? JSON.parse(saved) : MOCK_TOURS;
   });
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>(() => {
-    const saved = localStorage.getItem('lilipas_testimonials');
+    const saved = localStorage.getItem('lilipas_testimonials_v1');
     return saved ? JSON.parse(saved) : TESTIMONIALS;
   });
 
   const [settings, setSettings] = useState<SiteSettings>(() => {
-    const saved = localStorage.getItem('lilipas_settings');
+    const saved = localStorage.getItem('lilipas_settings_v1');
     return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
   });
 
   useEffect(() => {
-    localStorage.setItem('lilipas_tours', JSON.stringify(tours));
+    localStorage.setItem('lilipas_tours_v1', JSON.stringify(tours));
   }, [tours]);
 
   useEffect(() => {
-    localStorage.setItem('lilipas_testimonials', JSON.stringify(testimonials));
+    localStorage.setItem('lilipas_testimonials_v1', JSON.stringify(testimonials));
   }, [testimonials]);
 
   useEffect(() => {
-    localStorage.setItem('lilipas_settings', JSON.stringify(settings));
+    localStorage.setItem('lilipas_settings_v1', JSON.stringify(settings));
   }, [settings]);
 
-  const addTour = (tour: TourPackage) => setTours([...tours, tour]);
-  const deleteTour = (id: string) => setTours(tours.filter(t => t.id !== id));
-  const editTour = (updatedTour: TourPackage) => setTours(tours.map(t => t.id === updatedTour.id ? updatedTour : t));
+  const addTour = (tour: TourPackage) => setTours(prev => [...prev, tour]);
+  const deleteTour = (id: string) => setTours(prev => prev.filter(t => t.id !== id));
+  const editTour = (updatedTour: TourPackage) => setTours(prev => prev.map(t => t.id === updatedTour.id ? updatedTour : t));
 
   return (
     <ContentContext.Provider value={{ 
       tours, testimonials, settings, 
-      updateTours: setTours, 
-      updateTestimonials: setTestimonials, 
+      addTour, deleteTour, editTour,
       updateSettings: setSettings,
-      addTour, deleteTour, editTour
+      updateTestimonials: setTestimonials
     }}>
       {children}
     </ContentContext.Provider>
