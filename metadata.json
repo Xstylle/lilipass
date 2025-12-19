@@ -1,0 +1,7 @@
+{
+  "name": "Lilipas Travel - Expert Tour Packages",
+  "description": "A premium travel booking platform offering curated domestic and international tour packages with rich itineraries and seamless booking.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
